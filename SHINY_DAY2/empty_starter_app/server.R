@@ -50,11 +50,7 @@ function(input, output) {
 # CREATE ASTHMA CHARTS - PLOTLY CODE ----
 ##############################################. 
 
-  # data_filtered <- reactive({ 
-  #   
-  #   data_diagnosis <- data_asthma %>% subset(diagnosis %in% input$diagnosis)
-  # })
-  # 
+
   # plot_charts <- function(sex_chosen, age_grp_chosen) { 
   #                                                       
   #   data_plot <- data_asthma %>% subset(diagnosis %in% input$diagnosis & 
