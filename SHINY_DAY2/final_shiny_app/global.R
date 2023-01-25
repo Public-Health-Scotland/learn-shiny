@@ -14,6 +14,7 @@ library(shiny)
 library(shinyWidgets)
 library(tidyr)
 library(magrittr)
+library(readr)
 
 ##############################################.
 # LOAD DATA ----
