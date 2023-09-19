@@ -1,0 +1,539 @@
+---
+title: "Code along day 1"
+author: "Julia Moeller"
+date: "2023-09-06"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    toc_collapsed: true
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The following markdown has the correct code for the Code along section of Shiny training day 1.
+
+# Empty Shiny app
+
+```{r, eval = FALSE}
+library(shiny)
+
+ui <- fluidPage(
+  ) # end fluidPage
+
+server <- function(input, output){
+}
+
+shinyApp(ui = ui, server = server)
+
+```
+
+# App layout: Sidebar
+
+```{r, eval = FALSE}
+library(shiny)
+
+ui <- fluidPage(
+  
+  titlePanel("This is a Shiny app"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      "Sidebar",
+      br(), 
+      "Some other text in the sidebar"
+      ), # end sidebarPanel
+    
+    mainPanel(
+      "Main section",
+      br(),
+      br(),
+      br(),
+      "Some other text in the main section"
+    ) # end mainPanel
+    ) # end sidebarLayout
+  ) # end fluidPage
+
+server <- function(input, output){
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+# NYC Dogs
+
+## V1: Default data table
+### UI
+```{r, eval = FALSE}
+library(shiny)
+library(tidyverse)
+
+nyc_dogs <- read_csv("data/nyc_dogs.csv")
+
+ui <- fluidPage(
+  
+  radioButtons(inputId = 'gender',
+               label = "Male or female dogs?",
+               choices = c("Male", "Female")),
+  
+  tableOutput("table_output")
+  
+) # end fluidPage
+
+```
+
+### Server
+```{r, eval = FALSE}
+server <- function(input, output) {
+  
+  output$table_output <- renderTable({
+    nyc_dogs %>%
+      filter(gender == input$gender) %>%
+      slice(1:10)
+  })
+
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+## V2: DT data table
+### UI
+```{r, eval = FALSE}
+library(shiny)
+library(tidyverse)
+
+nyc_dogs <- read_csv("data/nyc_dogs.csv")
+
+ui <- fluidPage(
+  
+  radioButtons(inputId = 'gender',
+               label = "Male or female dogs?",
+               choices = c("Male", "Female")),
+  
+  DT::dataTableOutput("table_output")
+  
+) # end fluidPage
+
+```
+
+### Server
+```{r, eval = FALSE}
+server <- function(input, output) {
+  
+  output$table_output <- DT::renderDataTable({
+    nyc_dogs %>%
+      filter(gender == input$gender)
+  })
+
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+
+## V3: Columns and filters
+
+### UI
+```{r, eval = FALSE}
+library(shiny)
+library(tidyverse)
+
+nyc_dogs <- read_csv("data/nyc_dogs.csv")
+
+ui <- fluidPage(
+  
+  fluidRow(
+    column(3, 
+           radioButtons(inputId = 'gender',
+                        label = "Male or female dogs?",
+                        choices = c("Male", "Female"))
+           ), # end column
+    column(3, 
+           selectInput(inputId = "breed",
+                       label = "Which breed?",
+                       choices = unique(nyc_dogs$breed))
+           ) # end column
+    ), # end fluidRow
+  
+  tableOutput("table_output")
+  
+) # end fluidPage
+```
+
+### Server
+```{r, eval = FALSE}
+server <- function(input, output) {
+  
+  output$table_output <- renderTable({
+    nyc_dogs %>%
+      filter(gender == input$gender) %>%
+      filter(breed == input$breed)
+  })
+
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+## V3.1 Four filters gender, colour, breed, borough
+
+### U1
+```{r, eval = FALSE}
+ui <- fluidPage(
+  
+  fluidRow(
+    column(3, 
+           radioButtons(inputId = 'gender',
+                        label = "Male or female dogs?",
+                        choices = c("Male", "Female"))
+           ), # end column
+    column(3, 
+           selectInput(inputId = "colour",
+                       label = "Which colour?",
+                       choices = unique(nyc_dogs$colour))
+           ), # end column
+    column(3, 
+           selectInput(inputId = "breed",
+                       label = "Which breed?",
+                       choices = unique(nyc_dogs$breed))
+           ), # end column
+    column(3, 
+           selectInput(inputId = "borough",
+                       label = "Which borough?",
+                       choices = unique(nyc_dogs$borough))
+           ), # end column
+    ), # end fluidRow
+  
+  tableOutput("table_output")
+  
+) # end fluidPage
+```
+
+### Server
+```{r, eval = FALSE}
+server <- function(input, output) {
+  
+  output$table_output <- renderTable({
+    nyc_dogs %>%
+      filter(gender == input$gender) %>%
+      filter(colour == input$colour) %>%
+      filter(breed == input$breed) %>%
+      filter(borough == input$borough)
+  })
+
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+## V4: Plots
+
+### UI
+```{r, eval = FALSE}
+library(shiny)
+library(tidyverse)
+
+nyc_dogs <- read_csv("data/nyc_dogs.csv")
+
+ui <- fluidPage(
+  
+  fluidRow(
+    column(6, 
+           radioButtons(inputId = 'gender',
+                        label = "Male or female dogs?",
+                        choices = c("Male", "Female"))
+           ), # end column
+    column(6, 
+           selectInput(inputId = "breed",
+                       label = "Which breed?",
+                       choices = unique(nyc_dogs$breed))
+           ), # end column
+    ), # end fluidRow
+  
+  fluidRow(
+    column(6,
+           plotOutput(outputId = "colour_barchart")
+           ), # end column
+    column(6,
+           plotOutput(outputId = "borough_barchart")
+    ), # end column
+  ) # end fluidRow
+) # end fluidPage
+```
+
+### Server (v1)
+ 
+```{r, eval = FALSE}
+server <- function(input, output) {
+  
+  filtered_data <- nyc_dogs %>%
+    filter(gender == input$gender) %>%
+    filter(breed == input$breed)
+  
+  output$colour_barchart <- renderPlot({
+    ggplot(filtered_data) +
+      geom_bar(aes(x = colour))
+  }) 
+  
+  output$borough_barchart <- renderPlot({
+    ggplot(filtered_data) +
+      geom_bar(aes(x = borough))
+  })
+
+}
+```
+
+Error in Console.
+
+### Server (v2)
+
+```{r, eval = FALSE}
+server <- function(input, output) {
+  
+  filtered_data <- reactive({
+    nyc_dogs %>%
+      filter(gender == input$gender) %>%
+      filter(breed == input$breed)
+  })
+  
+  output$colour_barchart <- renderPlot({
+    ggplot(filtered_data()) +
+      geom_bar(aes(x = colour))
+  })
+  
+  output$borough_barchart <- renderPlot({
+    ggplot(filtered_data()) +
+      geom_bar(aes(x = borough))
+  })
+
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+## V5: Multiple tabs
+
+### Tab 1: Table
+```{r, eval = FALSE}
+ui <- fluidPage(
+  
+  titlePanel("NYC DOGS"),
+  
+  navbarPage("Navigation Bar",
+             tabPanel(title = "Table",
+                      fluidRow(
+                        column(3, 
+                               radioButtons(inputId = 'gender',
+                                            label = "Male or female dogs?",
+                                            choices = c("Male", "Female"))
+                               ), # end column
+                        column(3, 
+                               selectInput(inputId = "colour",
+                                           label = "Which colour?",
+                                           choices = unique(nyc_dogs$colour))
+                               ), # end column
+                        column(3,
+                               selectInput(inputId = "borough",
+                                           label = "Which borough?",
+                                           choices = unique(nyc_dogs$borough))
+                               ), # end column
+                        column(3,
+                               selectInput(inputId = "breed",
+                                           label = "Which breed?",
+                                           choices = unique(nyc_dogs$breed))
+                               ) # end column
+                        ), # end fluidRow
+                      
+                      tableOutput("table_output")), # end tabPanel
+  )
+)
+```
+
+### Tab2 and 3: Plot and information
+
+```{r, eval = FALSE}
+
+ui <- fluidPage(
+  
+  titlePanel("NYC DOGS"),
+  
+  navbarPage("Navigation Bar",
+             tabPanel(title = "Table",
+                      fluidRow(
+                        column(3, 
+                               radioButtons(inputId = 'gender',
+                                            label = "Male or female dogs?",
+                                            choices = c("Male", "Female"))
+                               ), # end column
+                        column(3, 
+                               selectInput(inputId = "colour",
+                                           label = "Which colour?",
+                                           choices = unique(nyc_dogs$colour))
+                               ), # end column
+                        column(3,
+                               selectInput(inputId = "borough",
+                                           label = "Which borough?",
+                                           choices = unique(nyc_dogs$borough))
+                               ), # end column
+                        column(3,
+                               selectInput(inputId = "breed",
+                                           label = "Which breed?",
+                                           choices = unique(nyc_dogs$breed))
+                               ) # end column
+                        ), # end fluidRow
+                      
+                      tableOutput("table_output")), # end tabPanel
+             
+             tabPanel(title = "Plot",
+                      fluidRow(
+                        column(6,
+                               radioButtons(inputId = "gender_chart",
+                                            label = tags$i("Male or Female Dogs?"),
+                                            choices = c("Male", "Female"))
+                        ), # end column
+                        column(6,
+                               selectInput(inputId = "breed_chart",
+                                           label = tags$i("Which Breed?"),
+                                           choices = unique(nyc_dogs$breed))
+                        ) # end column
+                      ), # end fluidRow
+                      
+                      fluidRow(
+                        column(6,
+                               plotOutput("colour_barchart")
+                        ), # end column
+                        column(6,
+                               plotOutput("borough_barchart"))
+                        ) # end fluidRow
+                      ), # end tabPanel
+             tabPanel(title = "Information",
+                      p("This data has been taken from the NYC Department of health and", br(),
+                        "shows the popularity of dog names in New York City by gender, colour,", br(),
+                        "breed and borough."),
+                      p(tags$a("The NYC Department of Health Website", 
+                               href = "https://www.health.ny.gov/"))) # end of tabPanel
+             ) # end navbarPage
+  ) # end fluidPage
+
+```
+
+### Server
+
+```{r, eval = FALSE}
+server <- function(input, output) {
+  
+  table_data <- reactive({
+    nyc_dogs %>%
+      filter(gender == input$gender) %>%
+      filter(breed ==  input$breed) %>%
+      filter(colour ==  input$colour) %>%
+      filter(borough ==  input$borough)
+  })
+  
+  output$table_output <- renderTable({
+    table_data()
+  })
+  
+  plot_data <- reactive({
+    nyc_dogs %>%
+      filter(gender == input$gender_chart) %>%
+      filter(breed ==  input$breed_chart)
+  })
+  
+  output$colour_barchart <- renderPlot({
+    ggplot(plot_data()) +
+      geom_bar(aes(x = colour))
+  })
+  
+  output$borough_barchart <- renderPlot({
+    ggplot(plot_data()) +
+      geom_bar(aes(x = borough))
+  })
+
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+## Icons and themes
+
+```{r, eval = FALSE}
+ui <- fluidPage(
+  
+  theme = shinytheme("flatly"),
+  
+  titlePanel(tags$h1("NYC DOGS")),
+  
+  navbarPage("Navigation Bar",
+             tabPanel(title = "Table",
+                      icon = icon("table"),
+                      fluidRow(
+                        column(3, 
+                               radioButtons(inputId = 'gender',
+                                            label = "Male or female dogs?",
+                                            choices = c("Male", "Female"))
+                               ), # end column
+                        column(3, 
+                               selectInput(inputId = "colour",
+                                           label = "Which colour?",
+                                           choices = unique(nyc_dogs$colour))
+                               ), # end column
+                        column(3,
+                               selectInput(inputId = "borough",
+                                           label = "Which borough?",
+                                           choices = unique(nyc_dogs$borough))
+                               ), # end column
+                        column(3,
+                               selectInput(inputId = "breed",
+                                           label = "Which breed?",
+                                           choices = unique(nyc_dogs$breed))
+                               ) # end column
+                        ), # end fluidRow
+                      
+                      tableOutput("table_output")), # end tabPanel
+             
+             tabPanel(title = "Plot",
+                      icon = icon("chart-area"),
+                      fluidRow(
+                        column(6,
+                               radioButtons(inputId = "gender_chart",
+                                            label = tags$i("Male or Female Dogs?"),
+                                            choices = c("Male", "Female"))
+                        ), # end column
+                        column(6,
+                               selectInput(inputId = "breed_chart",
+                                           label = tags$i("Which Breed?"),
+                                           choices = unique(nyc_dogs$breed))
+                        ) # end column
+                      ), # end fluidRow
+                      
+                      fluidRow(
+                        column(6,
+                               plotOutput("colour_barchart")
+                        ), # end column
+                        column(6,
+                               plotOutput("borough_barchart"))
+                        ) # end fluidRow
+                      ), # end tabPanel
+             tabPanel(title = "Information",
+                      icon = icon("circle-info"),
+                      p("This data has been taken from the NYC Department of health and", br(),
+                        "shows the popularity of dog names in New York City by gender, colour,", br(),
+                        "breed and borough."),
+                      p(tags$a("The NYC Department of Health Website", 
+                               href = "https://www.health.ny.gov/"))) # end of tabPanel
+             ) # end navbarPage
+  ) # end fluidPage
+```
+
