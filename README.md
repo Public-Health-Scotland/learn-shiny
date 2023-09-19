@@ -8,6 +8,7 @@ This repository contains the materials for the R Shiny training. The training is
 
 The repository is structured as follows:
 
+```
 ├── day x // course materials for day x
 │ ├── data // data used within that day
 │ ├── code // code for app and code-along sessions
@@ -15,3 +16,4 @@ The repository is structured as follows:
 ├── pre-course // pre-course materials
 ├── .gitignore // gitignore
 └── README.md // this file
+```
