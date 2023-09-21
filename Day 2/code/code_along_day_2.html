@@ -1514,8 +1514,8 @@ div.tocify {
 section of Shiny training day 2.</p>
 <div id="empty-app" class="section level1">
 <h1>Empty app</h1>
-<div id="gobal" class="section level2">
-<h2>Gobal</h2>
+<div id="global" class="section level2">
+<h2>Global</h2>
 <pre class="r"><code>library(dplyr) #data manipulation
 library(plotly) #charts
 library(ggplot2)
@@ -1651,8 +1651,8 @@ data_list_data_tab &lt;- c(&quot;Allergies Data&quot; = &quot;data_allergy&quot;
 } # END OF SERVER</code></pre>
 </div>
 </div>
-<div id="phs-siny-dashboard" class="section level1">
-<h1>PHS Siny dashboard</h1>
+<div id="phs-shiny-dashboard" class="section level1">
+<h1>PHS Shiny dashboard</h1>
 <div id="introduction-tab-ui" class="section level2">
 <h2>Introduction tab: UI</h2>
 <pre class="r"><code> navbarPage(title = div(tags$a(img(src=&quot;phs-logo.png&quot;, width=120, alt = &quot;Public Health Scotland logo&quot;), #bringing in PHS logo and look for dashboard
@@ -2505,7 +2505,15 @@ data_list_data_tab &lt;- c(&quot;Allergies Data&quot; = &quot;data_allergy&quot;
       table_data %&lt;&gt;%
         select(diagnosis, year, sex, age_grp, numerator, rate)
     }
-  })</code></pre>
+  })
+  
+  # RENDER THE DATA TABLE ----
+  
+  
+# ENABLE DATA TO BE DOWNLOADED ----
+
+  
+}</code></pre>
 </div>
 <div id="data-downloads-server-render-table" class="section level2">
 <h2>Data downloads: Server render table</h2>
@@ -2772,140 +2780,6 @@ data_list_data_tab &lt;- c(&quot;Allergies Data&quot; = &quot;data_allergy&quot;
   )
   
 } # END OF SERVER</code></pre>
-<pre><code>## function(input, output) {
-##   
-## # NEW CONTENT AND FUTURE UPDATES INFO BUTTON ----
-##   
-##   observeEvent(input$new_next,
-##                showModal(modalDialog( # creats a modal: a pop-up box that contains text information
-##                  title = &quot;New content added and future updates&quot;,
-##                  h4(&quot;Future updates&quot;),
-##                  tags$ul(
-##                    tags$li(&quot;7 July 2023 - Allergies data update.&quot;),
-##                    tags$li(&quot;16 June 2025 - Asthma data update.&quot;)),
-##                  size = &quot;m&quot;,
-##                  easyClose = TRUE, fade=FALSE,footer = modalButton(&quot;Close (Esc)&quot;)))) # creates the esc button for closing the popup box
-## 
-##   
-## # CREATE ALLERGIES CHART - PLOTLY CODE ----
-## 
-##   output$chart &lt;- renderPlotly({ 
-##     
-##     #Data for condition
-##     data_condition &lt;- data_allergy %&gt;% 
-##       subset(type %in% input$conditions &amp; measure==input$measure)
-##     
-##     #y axis title
-##     yaxistitle &lt;- case_when(input$measure == &quot;Number&quot; ~ &quot;Number of hospital admissions&quot;,
-##                             input$measure == &quot;Rate&quot; ~ &quot;Hospital admissions &lt;br&gt;per 100,000 population&quot;)
-##     
-##     plot &lt;- 
-##       ggplot(data_condition, aes(x = year, y = value, colour = type)) +
-##       geom_line(aes(group=1)) +
-##       theme_minimal()
-##     
-##     ggplotly(height = 500,
-##              width = 1000) %&gt;%
-##       layout(annotations = list(), #It needs this because of a buggy behaviour
-##              yaxis = list(title = yaxistitle, rangemode=&quot;tozero&quot;, fixedrange=TRUE), 
-##              xaxis = list(title = &quot;Financial year&quot;,  fixedrange=TRUE, tickangle = 270),  
-##              font = list(family = &#39;Arial, sans-serif&#39;), # font
-##              margin = list(pad = 4, t = 50, r = 30), # margin-paddings
-##              hovermode = &#39;false&#39;) %&gt;% # to get hover compare mode as default
-##       config(displayModeBar= T, displaylogo = F) # taking out plotly logo and collaborate button
-##   }
-##   )
-## 
-## # CREATE ASTHMA CHARTS - PLOTLY CODE ----
-## 
-## 
-##   plot_charts &lt;- function(sex_chosen, age_grp_chosen) { 
-##     
-##     data_plot &lt;- data_asthma %&gt;% subset(diagnosis %in% input$diagnosis &amp; 
-##                                           sex == sex_chosen &amp;
-##                                           age_grp == age_grp_chosen)
-##     
-##     #y axis title
-##     yaxistitle &lt;- case_when(input$measure_asthma == &quot;Numerator&quot; ~ &quot;Number of hospital admissions&quot;,
-##                             input$measure_asthma == &quot;Rate&quot; ~ &quot;Hospital admissions &lt;br&gt;per 100,000 population&quot;)
-##     
-##     plot &lt;- 
-##       ggplot(data_plot, aes(x = year, y = get(tolower(input$measure_asthma)), colour = diagnosis)) +
-##       geom_line(aes(group=1)) +
-##       theme_minimal()
-##     
-##     ggplotly() %&gt;%
-##       layout(annotations = list(),
-##              yaxis = list(title = yaxistitle, rangemode=&quot;tozero&quot;, fixedrange=TRUE), 
-##              xaxis = list(title = &quot;Financial year&quot;,  fixedrange=TRUE, tickangle = 270),  
-##              font = list(family = &#39;Arial, sans-serif&#39;), 
-##              margin = list(pad = 4, t = 50, r = 30), 
-##              hovermode = &#39;false&#39;) %&gt;% 
-##       config(displayModeBar= T, displaylogo = F) 
-##     
-##   }
-##   
-##   # Here, the plot_charts function created above is put into use
-##   output$male_all &lt;- renderPlotly({ plot_charts(sex_chosen = &quot;Male&quot;, age_grp_chosen = &quot;All&quot;) %&gt;% 
-##       layout(title = &quot;Males All Ages&quot;)}) 
-##   output$female_all &lt;- renderPlotly({ plot_charts(sex_chosen = &quot;Female&quot;, age_grp_chosen = &quot;All&quot;) %&gt;% 
-##       layout(title = &quot;Females All Ages&quot;)}) 
-##   output$male_under10 &lt;- renderPlotly({ plot_charts(sex_chosen = &quot;Male&quot;, age_grp_chosen = &quot;Under 10&quot;) %&gt;% 
-##       layout(title = &quot;Males Under 10&quot;)})
-##   output$female_under10 &lt;- renderPlotly({ plot_charts(sex_chosen = &quot;Female&quot;, age_grp_chosen = &quot;Under 10&quot;) %&gt;% 
-##       layout(title = &quot;Females Under 10&quot;)}) 
-##   output$male_over10 &lt;- renderPlotly({ plot_charts(sex_chosen = &quot;Male&quot;, age_grp_chosen = &quot;Over 10&quot;) %&gt;% 
-##       layout(title = &quot;Males Over 10&quot;)}) 
-##   output$female_over10 &lt;- renderPlotly({ plot_charts(sex_chosen = &quot;Female&quot;, age_grp_chosen = &quot;Over 10&quot;) %&gt;% 
-##       layout(title = &quot;Females Over 10&quot;)})
-## 
-## # CREATE THE DATA TABLE ----
-##   
-##   data_table &lt;- reactive({
-##     # Change dataset depending on what user selected
-##     table_data &lt;- switch(input$data_select,
-##                          &quot;data_allergy&quot; = data_allergy, 
-##                          &quot;data_asthma&quot; = data_asthma)
-##     
-##     if (input$data_select == &quot;data_allergy&quot;) { 
-##       table_data %&lt;&gt;%
-##         select(year, type, measure, value)
-##     } else if (input$data_select == &quot;data_asthma&quot;) { 
-##       table_data %&lt;&gt;%
-##         select(diagnosis, year, sex, age_grp, numerator, rate)
-##     }
-##   })
-## 
-## # RENDER THE DATA TABLE ----
-##   
-##   output$table_filtered &lt;- DT::renderDataTable({
-##     
-##     # Remove the underscore from column names in the table
-##     table_colnames  &lt;-  gsub(&quot;_&quot;, &quot; &quot;, colnames(data_table()))
-##     
-##     DT::datatable(data_table(), 
-##                   style = &#39;bootstrap&#39;,
-##                   class = &#39;table-bordered table-condensed&#39;,
-##                   rownames = FALSE,
-##                   options = list(pageLength = 20,
-##                                  dom = &#39;tip&#39;,
-##                                  autoWidth = TRUE),
-##                   filter = &quot;top&quot;,
-##                   colnames = table_colnames)
-##   })
-##   
-## # ENABLE DATA TO BE DOWNLOADED ----
-##   output$download_table_csv &lt;- downloadHandler(
-##     filename = function() {
-##       paste(input$data_select, &quot;.csv&quot;, sep = &quot;&quot;)
-##     },
-##     content = function(file) {
-##       # This downloads only the data the user has selected using the table filters
-##       write_csv(data_table()[input[[&quot;table_filtered_rows_all&quot;]], ], file) 
-##     } 
-##   )
-##   
-## }</code></pre>
 </div>
 </div>
 

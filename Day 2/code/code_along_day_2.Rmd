@@ -19,7 +19,7 @@ The following markdown has the correct code for the Code along section of Shiny 
 
 # Empty app
 
-## Gobal
+## Global
 ```{r, eval = FALSE}
 library(dplyr) #data manipulation
 library(plotly) #charts
@@ -161,7 +161,7 @@ function(input, output) {
 } # END OF SERVER
 ```
 
-# PHS Siny dashboard
+# PHS Shiny dashboard
 
 ## Introduction tab: UI
 
@@ -1035,6 +1035,14 @@ function(input, output) {
         select(diagnosis, year, sex, age_grp, numerator, rate)
     }
   })
+  
+  # RENDER THE DATA TABLE ----
+  
+  
+# ENABLE DATA TO BE DOWNLOADED ----
+
+  
+}
 ```
 
 ## Data downloads: Server render table 
