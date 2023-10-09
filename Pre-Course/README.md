@@ -20,7 +20,10 @@
     "readr",
     "Shiny",
     "shinyWidgets",
-    "tidyr"
+    "shinythemes",
+    "shinycssloader",
+    "tidyr",
+    "profvis",
   )
   ```
 - [ ] GitHub account and member of the PHS GitHub organisation: [PHS GitHub Guidance](https://public-health-scotland.github.io/knowledge-base/docs/Version%20Control?doc=GitHub%20Guidance.md)
