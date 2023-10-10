@@ -22,6 +22,8 @@
     "shinyWidgets",
     "shinythemes",
     "shinycssloader",
+    "shinymanager",
+    "rsconnect",
     "tidyr",
     "profvis",
   )
