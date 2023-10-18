@@ -11,16 +11,16 @@ function(input, output) {
   #output$chart <- renderPlotly({ 
   #  
   #  #Data for condition
-  #  data_condition <- data_allergy %>% subset(type %in% input$conditions & measure==input$measure)
+  #  data_condition <- 
   #  
   #  #y axis title
   #  yaxistitle <- case_when(input$measure == "Number" ~ "Number of hospital admissions",
   #                          input$measure == "Rate" ~ "Hospital admissions <br>per 100,000 population")
   #  
   #  plot <- 
-  #    ggplot(data_condition, aes(x = year, y = value, colour = type)) +
-  #    geom_line(aes(group=1)) +
-  #    theme_minimal()
+  #    
+  #    
+  #    
   #  
   #  ggplotly(height = 500,
   #           width = 1000) %>%
@@ -41,18 +41,16 @@ function(input, output) {
 
   #plot_charts <- function(sex_chosen, age_grp_chosen) { 
   #  
-  #  data_plot <- data_asthma %>% subset(diagnosis %in% input$diagnosis & 
-  #                                        sex == sex_chosen &
-  #                                        age_grp == age_grp_chosen)
+  #  data_plot <- 
   #  
   #  #y axis title
-  #  yaxistitle <- case_when(input$measure_asthma == "Numerator" ~ "Number of hospital admissions",
-  #                          input$measure_asthma == "Rate" ~ "Hospital admissions <br>per 100,000 population")
+  #  yaxistitle <- 
+  #                          
   #  
   #  plot <- 
-  #    ggplot(data_plot, aes(x = year, y = get(tolower(input$measure_asthma)), colour = diagnosis)) +
-  #    geom_line(aes(group=1)) +
-  #    theme_minimal()
+  #    
+  #    
+  #    
   #  
   #  ggplotly() %>%
   #    layout(annotations = list(),
@@ -67,11 +65,11 @@ function(input, output) {
   #
   ## Here, the plot_charts function created above is put into use
   #output$male_all <- renderPlotly({ plot_charts(sex_chosen = "Male", age_grp_chosen = "All") %>% layout(title = "Males All Ages")}) 
-  #output$female_all <- renderPlotly({ plot_charts(sex_chosen = "Female", age_grp_chosen = "All") %>% layout(title = "Females All Ages")}) 
-  #output$male_under10 <- renderPlotly({ plot_charts(sex_chosen = "Male", age_grp_chosen = "Under 10") %>% layout(title = "Males Under 10")})
+  #output$female_all <- 
+  #output$male_under10 <- 
   #output$female_under10 <- renderPlotly({ plot_charts(sex_chosen = "Female", age_grp_chosen = "Under 10") %>% layout(title = "Females Under 10")}) 
   #output$male_over10 <- renderPlotly({ plot_charts(sex_chosen = "Male", age_grp_chosen = "Over 10") %>% layout(title = "Males Over 10")}) 
-  #output$female_over10 <- renderPlotly({ plot_charts(sex_chosen = "Female", age_grp_chosen = "Over 10") %>% layout(title = "Females Over 10")})
+  #output$female_over10 <- 
   
 
 
