@@ -11,7 +11,7 @@
 - [ ] Access to Posit: https://pwb.publichealthscotland.org
 - [ ] R Packages installed:
   ```R
-  install.packages(
+  install.packages(c(
     "dplyr",
     "DT",
     "ggplot2",
@@ -21,12 +21,12 @@
     "Shiny",
     "shinyWidgets",
     "shinythemes",
-    "shinycssloader",
+    "shinycssloaders",
     "shinymanager",
     "rsconnect",
     "tidyr",
-    "profvis",
-  )
+    "profvis"
+  ))
   ```
 - [ ] GitHub account and member of the PHS GitHub organisation: [PHS GitHub Guidance](https://public-health-scotland.github.io/knowledge-base/docs/Version%20Control?doc=GitHub%20Guidance.md)
 - [ ] Access to learn-shiny repo: [https://github.com/Public-Health- Scotland/learn-shiny](https://github.com/Public-Health- Scotland/learn-shiny)
